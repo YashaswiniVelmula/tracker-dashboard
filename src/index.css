@@ -1,0 +1,5 @@
+MapComponent {
+  border: 2px solid #080808; /* Border style */
+  border-radius: 8px; /* Optional: Rounded corners */
+  padding: 10px; /* Optional: Padding around the map */
+}
