@@ -6,24 +6,28 @@ import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
 import { gql, useLazyQuery, useSubscription } from "@apollo/client";
 import { useState } from "react";
+import { v4 as uuidv4 } from 'uuid';
 
 const getSubscriptionQuery = gql`
-  subscription GetRecordsSubscription {
-    recordInRadius {
-      address {
-        latitude
-        longitude
-        location
+  subscription GetRecordsSubscription ($userID: ID!)  {
+    recordInRadius(userID: $userID) {
+        records {
+          address {
+            latitude
+            longitude
+            location
+          }
+          firstName
+          lastName
+          age
+          dob    
+          caseDetail {
+            date
+            type
+          }
+        }
+        userID
       }
-      firstName
-      lastName
-      age
-      dob
-      caseDetail {
-        date
-        type
-      }
-    }
   }
 `;
 
@@ -32,11 +36,13 @@ const getQuery = gql`
     $latitude: Float!
     $longitude: Float!
     $radiusInMiles: Float!
+    $userID: ID!
   ) {
     getRecordsInRadius(
       latitude: $latitude
       longitude: $longitude
       radiusInMiles: $radiusInMiles
+      userID: $userID
     ) {
       firstName
       lastName
@@ -49,12 +55,13 @@ const getQuery = gql`
 function App() {
   const [getRecordsLazyQuery] = useLazyQuery(getQuery);
   const [markers, setMarkers] = useState([]);
+  const [userID, setUserID] = useState(uuidv4());
 
   useSubscription(getSubscriptionQuery, {
+    variables: {userID},
     onData: (subscriptionData) => {
-        console.log("subsciption data", subscriptionData)
-      if (subscriptionData?.data?.data?.recordInRadius) {
-        setMarkers(prevRecords => [...prevRecords, ...subscriptionData?.data?.data?.recordInRadius]);
+      if (subscriptionData?.data?.data?.recordInRadius?.records) {
+        setMarkers(prevRecords => [...prevRecords, ...subscriptionData?.data?.data?.recordInRadius?.records]);
       }
     },
   });
@@ -62,12 +69,15 @@ function App() {
   const [lat, setLat] = useState(0);
   const [long, setLong] = useState(0);
   const [radius, setRadius] = useState(5);
+
   const handleSearchClick = () => {
+    setMarkers([]);
     getRecordsLazyQuery({
       variables: {
         latitude: lat,
         longitude: long,
         radiusInMiles: radius,
+        userID
       },
     });
   };
