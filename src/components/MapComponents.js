@@ -12,7 +12,7 @@ const mapContainerStyle = {
 };
 
 const center = {
-  lat: 38.6270,
+  lat: 38.627,
   lng: -90.1994,
 };
 
@@ -32,10 +32,18 @@ const MapComponent = ({ markers }) => {
   if (!isLoaded) return <div>Loading Maps...</div>;
   return (
     <div className="map-container">
-      <GoogleMap mapContainerStyle={mapContainerStyle} center={ (markers.length > 0 ? {
-        lat: markers[0]?.address?.latitude,
-        lng: markers[0]?.address?.longitude
-      } : center)} zoom={8}>
+      <GoogleMap
+        mapContainerStyle={mapContainerStyle}
+        center={
+          markers.length > 0
+            ? {
+                lat: markers[0]?.address?.latitude,
+                lng: markers[0]?.address?.longitude,
+              }
+            : center
+        }
+        zoom={8}
+      >
         {markers.map((marker) => (
           <Marker
             key={marker.id}
