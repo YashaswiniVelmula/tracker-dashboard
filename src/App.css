@@ -1,11 +1,35 @@
 .map-container {
-  border: 2px solid #080808; /* Border style */
-  border-radius: 4px; /* Optional: Rounded corners */
+  margin: 3rem;
+  border-radius: 3rem; /* Optional: Rounded corners */
 }
 .search-button {
-  &.MuiButtonBase-root {background-color: white; padding: 8px 20px; color: black}; 
-  &.MuiButtonBase-root:hover {color: white};
+  &.MuiButtonBase-root { padding: 8px 20px; color: white; border: 1px solid white}; 
+  
 }
-.radius-button {
- &.MuiTextField-root  {width: 100%;};
+.radius-button .MuiSvgIcon-root {
+  color: white !important; /* Icon color */
+}
+
+.radius-button .MuiFormLabel-root {
+  color: white !important; /* Label color */
+}
+
+.radius-button .MuiInputLabel-root {
+  color: white !important; /* Input color */
+}
+
+.radius-button .MuiOutlinedInput-notchedOutline {
+  border-color: white !important;
+}
+
+.radius-button .MuiInputBase-root {
+  color: white !important;
+}
+
+.toolBar{ 
+ &.MuiToolbar-root {display:grid; gap: 1rem; grid-template-columns: 3fr 1fr 1fr 1fr};
+} 
+.addressSearchRoot {
+  display: flex;
+
 }

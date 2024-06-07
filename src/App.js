@@ -8,8 +8,6 @@ import { gql, useLazyQuery, useSubscription } from "@apollo/client";
 import { useEffect, useState, useRef } from "react";
 import { v4 as uuidv4 } from "uuid";
 import CircularProgress from "@mui/material/CircularProgress";
-import { useState } from "react";
-import { v4 as uuidv4 } from "uuid";
 import { styled, alpha } from "@mui/material/styles";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -72,6 +70,7 @@ function App() {
   useSubscription(getSubscriptionQuery, {
     variables: { userID },
     onData: (subscriptionData) => {
+      setNumOfResponses((prev) => prev + 1);
       if (subscriptionData?.data?.data?.recordInRadius?.records) {
         setMarkers((prevRecords) => [
           ...prevRecords,
@@ -96,7 +95,7 @@ function App() {
       setShowSpinner(false);
       setNumOfResponses(0);
     }
-  }, [numOfResponses, searching, subscription]);
+  }, [numOfResponses, searching]);
 
   const handleSearchClick = () => {
     if (
@@ -189,29 +188,12 @@ function App() {
     <>
       <Box sx={{ flexGrow: 1 }}>
         <AppBar position="static">
-          <Toolbar>
-            <IconButton
-              size="large"
-              edge="start"
-              color="inherit"
-              aria-label="open drawer"
-              sx={{ mr: 2 }}
-            ></IconButton>
-            <Search>
-              <SearchIconWrapper>
-                <SearchIcon />
-              </SearchIconWrapper>
-              {/* <StyledInputBase
-                placeholder="Search Address"
-                inputProps={{ "aria-label": "search" }}
-              /> */}
-              <AddressSearch
-                //   className="search-address"
-                setLatValue={setLat}
-                setLongValue={setLong}
-              />
-            </Search>
-
+          <Toolbar className="toolBar">
+            <AddressSearch
+              //   className="search-address"
+              setLatValue={setLat}
+              setLongValue={setLong}
+            />
             <TextField
               className="radius-button"
               id="outlined-select-currency"
@@ -234,6 +216,7 @@ function App() {
             >
               Search
             </Button>
+            {showSpinner && <CircularProgress style={{ color: "white" }} />}
           </Toolbar>
         </AppBar>
       </Box>
