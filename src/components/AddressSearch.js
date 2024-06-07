@@ -5,7 +5,7 @@ import PlacesAutocomplete, {
 } from "react-places-autocomplete";
 import InputBase from "@mui/material/InputBase";
 
-const AddressSearch = ({ setLatValue, setLongValue }) => {
+const AddressSearch = ({ setLatValue, setLongValue, isDisabled }) => {
   const [address, setAddress] = useState("");
 
   const handleChange = (address) => {
@@ -25,36 +25,41 @@ const AddressSearch = ({ setLatValue, setLongValue }) => {
   };
 
   return (
-    <div>
+    // <div>
       <PlacesAutocomplete
         value={address}
         onChange={handleChange}
         onSelect={handleSelect}
-        
       >
         {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
-          <div>
-            {/* <input */}
-            {/* {...getInputProps({ placeholder: 'Search Address' })} */}
-            {/* /> */}
+          <div style={{ position: 'relative' }}>
             <InputBase
               sx={{ ml: 1, flex: 1 }}
-              {...getInputProps({ placeholder: "Search Address" })}
-              //   key={"searchInput"}
+              {...getInputProps({ placeholder: " Search Address..." })}
               inputProps={{ "aria-label": "search google maps" }}
               className="search-address"
               style={{  
-                    // "&.MuiInputBase-input": {
-                        width: "20rem",
-                        border: "1px solid grey",
-                    padding: "0.5rem",
-                    borderRadius: "0.3rem"
-                    // }
-                    
-                
+                        width: "100%",
+                        border: "1px solid #D3D3D3",
+                    padding: "0.2rem",
+                    borderRadius: "0.3rem",
+                    margin: "0"
               }}
+              disabled={isDisabled}
             />
-            <div>
+            <div
+            style={{
+                position: 'absolute',
+                top: '100%',
+                left: 0,
+                right: 0,
+                zIndex: 1000,
+                backgroundColor: '#fff',
+                border: '1px solid #D3D3D3',
+                borderRadius: '0.3rem',
+                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)'
+              }}
+              >
               {loading ? <div>Loading...</div> : null}
 
               {suggestions.map((suggestion) => {
@@ -75,7 +80,7 @@ const AddressSearch = ({ setLatValue, setLongValue }) => {
           </div>
         )}
       </PlacesAutocomplete>
-    </div>
+    // </div>
   );
 };
 

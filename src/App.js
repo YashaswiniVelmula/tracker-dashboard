@@ -5,8 +5,9 @@ import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
 import { gql, useLazyQuery, useSubscription } from "@apollo/client";
-import { useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { v4 as uuidv4 } from 'uuid';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const getSubscriptionQuery = gql`
   subscription GetRecordsSubscription ($userID: ID!)  {
@@ -55,12 +56,15 @@ const getQuery = gql`
 function App() {
   const [getRecordsLazyQuery] = useLazyQuery(getQuery);
   const [markers, setMarkers] = useState([]);
-  const [userID, setUserID] = useState(uuidv4());
+  const [userID] = useState(uuidv4());
+  const [numOfResponses, setNumOfResponses] = useState(0);
+  const [searching, setSearching] = useState(false);
 
-  useSubscription(getSubscriptionQuery, {
+  const subscription = useSubscription(getSubscriptionQuery, {
     variables: {userID},
     onData: (subscriptionData) => {
       if (subscriptionData?.data?.data?.recordInRadius?.records) {
+        setNumOfResponses((prev) => prev+1);
         setMarkers(prevRecords => [...prevRecords, ...subscriptionData?.data?.data?.recordInRadius?.records]);
       }
     },
@@ -69,9 +73,32 @@ function App() {
   const [lat, setLat] = useState(0);
   const [long, setLong] = useState(0);
   const [radius, setRadius] = useState(5);
+  const [showSpinner, setShowSpinner] = useState(false);
+
+  const prevLat = useRef(lat);
+  const prevLong = useRef(long);
+  const prevRadius = useRef(radius);
+
+  useEffect(() => {
+    if(searching && numOfResponses === 2) {
+        setSearching(false);
+        setShowSpinner(false);
+        setNumOfResponses(0);
+    }
+  }, [numOfResponses, searching, subscription]);
 
   const handleSearchClick = () => {
+    if (prevLat.current === lat && prevLong.current === long && prevRadius.current === radius) {
+        return;
+      }
+  
+    prevLat.current = lat;
+    prevLong.current = long;
+    prevRadius.current = radius;
     setMarkers([]);
+    setSearching(true);
+    setNumOfResponses(0);
+    setShowSpinner(true);
     getRecordsLazyQuery({
       variables: {
         latitude: lat,
@@ -98,30 +125,37 @@ function App() {
       value: 20,
       label: "20",
     },
+    {
+        value: 50,
+        label: "50",
+    },
   ];
   return (
     <>
       <div
         style={{
-          display: "flex",
-          justifyContent: "space-around",
-          alignItems: "center",
+          display: "grid",
+          gridTemplateColumns: "3fr 1fr 1fr 1fr",
+          gap: "1rem",
           margin: "1rem 0 1rem 0",
+          alignItems: "center"
         }}
       >
         <AddressSearch
         //   className="search-address"
           setLatValue={setLat}
           setLongValue={setLong}
+          isDisabled={showSpinner}
         />
         <TextField
           className="radius-button"
           id="outlined-select-currency"
           select
           size="small"
-          label="Select radius"
+          label="Select radius in Miles"
           defaultValue="5"
           onChange={(event) => setRadius(event.target.value)}
+          disabled={showSpinner}
         >
           {radiusOptions.map((option) => (
             <MenuItem key={option.value} value={option.value}>
@@ -130,12 +164,13 @@ function App() {
           ))}
         </TextField>
         <Button
-          variant="search"
+          variant="contained"
           className="search-button"
           onClick={handleSearchClick}
         >
           Search
         </Button>
+        {showSpinner && <CircularProgress />}
       </div>
       <MapComponent markers={markers} />
     </>

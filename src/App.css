@@ -3,9 +3,9 @@
   border-radius: 4px; /* Optional: Rounded corners */
 }
 .search-button {
-  &.MuiButtonBase-root {background-color: white; padding: 8px 20px; border: 0.5px solid rgb(192, 195, 195)}; 
-  &.MuiButtonBase-root:hover {border: 0.5px solid rgb(46, 47, 47)};
+  &.MuiButtonBase-root {background-color: white; padding: 8px 20px; color: black}; 
+  &.MuiButtonBase-root:hover {color: white};
 }
 .radius-button {
- &.MuiTextField-root  {width: 6rem};
+ &.MuiTextField-root  {width: 100%;};
 }

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import {
   GoogleMap,
-  MarkerF,
+  Marker,
   InfoWindow,
   useLoadScript,
 } from "@react-google-maps/api";
@@ -19,7 +19,6 @@ const center = {
 const libraries = ["places"];
 
 const MapComponent = ({ markers }) => {
-    console.log("markers", markers);
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: "AIzaSyDyZ2be-CfnBxmBPd8bIdfG8XRhTgb8bh4", // Replace with your API key
     libraries,
@@ -31,12 +30,14 @@ const MapComponent = ({ markers }) => {
 
   if (loadError) return <div>Error loading maps</div>;
   if (!isLoaded) return <div>Loading Maps...</div>;
-console.log(selectedMarker);
   return (
     <div className="map-container">
-      <GoogleMap mapContainerStyle={mapContainerStyle} center={center} zoom={8}>
+      <GoogleMap mapContainerStyle={mapContainerStyle} center={ (markers.length > 0 ? {
+        lat: markers[0]?.address?.latitude,
+        lng: markers[0]?.address?.longitude
+      } : center)} zoom={8}>
         {markers.map((marker) => (
-          <MarkerF
+          <Marker
             key={marker.id}
             position={{
               lat: marker.address.latitude,
