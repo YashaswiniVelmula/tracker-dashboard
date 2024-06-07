@@ -16,13 +16,13 @@ import { getMainDefinition } from "@apollo/client/utilities";
 
 const httpLink = new HttpLink({
     // uri: "http://localhost:4000/graphql",
-    uri: "http://graphql-server-crime-records-env.eba-epefitaj.us-east-1.elasticbeanstalk.com/graphql", //backend link, check backend console for link
+    uri: "http://graphql-servr-crime-records-env.eba-m4627mpj.us-east-1.elasticbeanstalk.com/graphql", //backend link, check backend console for link
 
 });
 
 export const wsClient = createClient({
     // url: "ws://localhost:4000/graphql",
-    url: "ws://graphql-server-crime-records-env.eba-epefitaj.us-east-1.elasticbeanstalk.com/graphql", // backend link, check backend console for link
+    url: "ws://graphql-servr-crime-records-env.eba-m4627mpj.us-east-1.elasticbeanstalk.com/graphql", // backend link, check backend console for link
   });
 
 // setting configuration for websocket connect for subscription
